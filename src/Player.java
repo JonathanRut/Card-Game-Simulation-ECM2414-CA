@@ -51,6 +51,14 @@ public class Player {
         hasWon();
     }
 
+    public int handSize() {
+        return hand.size();
+    }
+
+    public void receiveCard(Card card) {
+        hand.add(card);
+    }
+
     private void hasWon(){
         int matchingCards = 0;
         for(Card card : hand){

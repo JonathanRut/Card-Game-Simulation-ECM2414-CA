@@ -3,8 +3,7 @@ import java.util.LinkedList;
 public class CardDeck {
     private LinkedList<Card> deck;
 
-    public CardDeck(LinkedList<Card> deck){
-        this.deck = deck;
+    public CardDeck() {
     }
 
     public synchronized Card removeCard(){
@@ -18,5 +17,8 @@ public class CardDeck {
 
     public void addCard(Card card){
         deck.add(card);
+    }
+    public int deckSize() {
+        return  deck.size();
     }
 }
