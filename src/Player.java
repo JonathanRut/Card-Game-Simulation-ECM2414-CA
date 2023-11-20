@@ -1,18 +1,19 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Player {
     private LinkedList<Card> hand;
     static private int numberOfPlayers = 1;
     private final int playerNumber;
-    private final CardDeck drawDeck;
-    private final CardDeck discardDeck;
+    private final ConcurrentLinkedQueue<Card> drawDeck;
+    private final ConcurrentLinkedQueue<Card> discardDeck;
     private LinkedList<String> history;
     private int won = Integer.MAX_VALUE;
     private int turn = 0;
 
-    public Player(CardDeck drawDeck, CardDeck discardDeck){
+    public Player(ConcurrentLinkedQueue<Card> drawDeck, ConcurrentLinkedQueue<Card> discardDeck){
         this.discardDeck = discardDeck;
         this.drawDeck = drawDeck;
         playerNumber = numberOfPlayers;
@@ -22,7 +23,7 @@ public class Player {
     private void writeHistory(){}
 
     private int draw(){
-        Card card = drawDeck.removeCard();
+        Card card = drawDeck.remove();
         hand.add(card);
         return card.getNumber();
     }
@@ -37,7 +38,7 @@ public class Player {
         Random rnd = new Random();
         int removeIndex = possibleDiscards.get(rnd.nextInt(0,possibleDiscards.size()));
         Card discardedCard = hand.remove(removeIndex);
-        discardDeck.addCard(discardedCard);
+        discardDeck.add(discardedCard);
         return discardedCard.getNumber();
     }
 
