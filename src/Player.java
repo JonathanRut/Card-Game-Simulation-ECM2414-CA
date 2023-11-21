@@ -9,9 +9,10 @@ public class Player {
     private final int playerNumber;
     private final ConcurrentLinkedQueue<Card> drawDeck;
     private final ConcurrentLinkedQueue<Card> discardDeck;
-    private LinkedList<String> history;
-    private int won = Integer.MAX_VALUE;
+    private ArrayList<String> history;
+    static volatile private Player winner;
     private int turn = 0;
+    static volatile private int maxTurn = Integer.MAX_VALUE;
 
     public Player(ConcurrentLinkedQueue<Card> drawDeck, ConcurrentLinkedQueue<Card> discardDeck){
         this.discardDeck = discardDeck;
@@ -42,33 +43,35 @@ public class Player {
         return discardedCard.getNumber();
     }
 
-    private synchronized void makeMove(){
+    public int makeTurn(){
         turn++;
         int drawnNumber = draw();
         int discardNumber = discard();
         history.add("player " + playerNumber + " draws a " + drawnNumber + " from deck " + playerNumber);
         history.add("player " + playerNumber + "discards a " + discardNumber + " from deck " + (playerNumber + 1 == numberOfPlayers ? 0:playerNumber));
         history.add("player " + playerNumber + " current hand is " + hand.toString().replaceAll("[,]|[]]|[\\[]",""));
-        hasWon();
-    }
-
-    public int handSize() {
-        return hand.size();
+        return hasWon();
     }
 
     public void receiveCard(Card card) {
         hand.add(card);
     }
 
-    private void hasWon(){
+    private int hasWon(){
         int matchingCards = 0;
         for(Card card : hand){
             if(card.getNumber() == hand.peekFirst().getNumber()){
                 matchingCards += 1;
             }
         }
-        if (matchingCards == 4){
-            // TODO
-        }
+        return  matchingCards == 4 ? turn:Integer.MAX_VALUE;
+    }
+
+    public int getPlayerNumber(){
+        return  playerNumber;
+    }
+
+    public int getTurn(){
+        return turn;
     }
 }

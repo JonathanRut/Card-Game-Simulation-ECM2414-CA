@@ -5,10 +5,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CardGame {
     private final int playerNumber;
-    private ConcurrentLinkedQueue<Card> pack;
-    private ArrayList<ConcurrentLinkedQueue<Card>> decks;
-    private Player[] players;
-    private int finalTurn = Integer.MAX_VALUE;
+    private ArrayList<Card> pack;
+    private final ArrayList<ConcurrentLinkedQueue<Card>> decks;
+    private final Player[] players;
+    private volatile int maxTurn = Integer.MAX_VALUE;
 
     public static void main(String[] args){
         Scanner in = new Scanner(System.in);
@@ -64,8 +64,19 @@ public class CardGame {
             players[i] = tempPlayer;
         }
     }
-    public LinkedList<String> playGame() {
-
+    public void playGame() {
+        for(Player player : players){
+            Thread playerThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    history.add("player " + playerNumber + " initial hand " + hand.toString().replaceAll("[,]|[]]|[\\[]",""));
+                    while(player.getTurn() <= maxTurn){
+                        maxTurn = player.makeTurn();
+                    }
+                }
+            });
+            playerThread.start();
+        }
     }
 
     private boolean readDeck(String Filename){
@@ -78,7 +89,7 @@ public class CardGame {
                 try{
                     data = Integer.parseInt(openedPack.nextLine());
                 } catch (NumberFormatException e){
-                    pack = new ConcurrentLinkedQueue<Card>();
+                    pack = new ArrayList<>();
                     return false;
                 }
                 if(data < 0){
@@ -96,24 +107,22 @@ public class CardGame {
         } catch (NoSuchElementException e){
             return true;
         }
-        pack = new ConcurrentLinkedQueue<Card>();
+        pack = new ArrayList<>();
         return false;
     }
 
     private void dealDeck() {
-        Random randomiser = new Random();
-        for (Card card: pack) {
-            Card dealtCard = pack.get(randomiser.nextInt(pack.size()));
-            for (CardDeck emptydeck : decks) {
-                if (emptydeck.deckSize() < 4) {
-                    emptydeck.addCard(dealtCard);
-                }
-            }
+        for(int i = 0; i < 4; i++) {
             for (Player emptyplayer : players) {
-                if (emptyplayer.handSize() < 4) {
-                    emptyplayer.receiveCard(dealtCard);
-                }
+                emptyplayer.receiveCard(pack.remove(0));
             }
         }
+        for(int i = 0; i < 4; i++) {
+            for (ConcurrentLinkedQueue<Card> emptyDecks : decks) {
+                emptyDecks.add(pack.remove(0));
+            }
+        }
+
+
     }
 }
