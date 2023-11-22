@@ -5,9 +5,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CardGame {
     private final int playerNumber;
-    private ArrayList<Card> pack;
-    private final ArrayList<ConcurrentLinkedQueue<Card>> decks;
+    private ArrayList<Card> pack = new ArrayList<>();
+    private final ArrayList<CardDeck> decks;
     private final Player[] players;
+    private ArrayList<Integer> finishedPlayers = new ArrayList<>();
     private volatile int maxTurn = Integer.MAX_VALUE;
 
     public static void main(String[] args){
@@ -34,7 +35,8 @@ public class CardGame {
                 System.out.println("You have entered an invalid file location");
             }
         }
-
+        game.dealDeck();
+        game.playGame();
     }
 
     public static boolean isValidPlayers(String testNumber){
@@ -45,7 +47,7 @@ public class CardGame {
         catch (NumberFormatException e){
             return false;
         }
-        return number < 2;
+        return number >= 2;
     }
 
 
@@ -55,12 +57,12 @@ public class CardGame {
         decks = new ArrayList<>();
 
         for (int i = 0; i < this.playerNumber; i++) {
-            ConcurrentLinkedQueue<Card> tempDeck = new ConcurrentLinkedQueue<Card>();
+            CardDeck tempDeck = new CardDeck();
             decks.add(tempDeck);
         }
 
         for (int i = 0; i < this.playerNumber; i++) {
-            Player tempPlayer = new Player(decks.get(i), decks.get(i == this.playerNumber - 1?1:i));
+            Player tempPlayer = new Player(decks.get(i), decks.get(i == this.playerNumber - 1?1:(i + 1)));
             players[i] = tempPlayer;
         }
     }
@@ -69,9 +71,16 @@ public class CardGame {
             Thread playerThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    history.add("player " + playerNumber + " initial hand " + hand.toString().replaceAll("[,]|[]]|[\\[]",""));
-                    while(player.getTurn() <= maxTurn){
-                        maxTurn = player.makeTurn();
+                    while(player.getTurn() < maxTurn){
+                        int temp =  player.makeTurn();
+                        if (temp < maxTurn) {
+                            maxTurn = temp;
+                        }
+                    }
+                    finishedPlayers.add(player.getPlayerNumber());
+                    System.out.println(finishedPlayers);
+                    if (finishedPlayers.size() == 4) {
+                        System.out.println("hey");
                     }
                 }
             });
@@ -118,8 +127,8 @@ public class CardGame {
             }
         }
         for(int i = 0; i < 4; i++) {
-            for (ConcurrentLinkedQueue<Card> emptyDecks : decks) {
-                emptyDecks.add(pack.remove(0));
+            for (CardDeck emptyDecks : decks) {
+                emptyDecks.addCard(pack.remove(0));
             }
         }
 

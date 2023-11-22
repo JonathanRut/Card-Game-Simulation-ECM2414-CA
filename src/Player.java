@@ -4,17 +4,17 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Player {
-    private LinkedList<Card> hand;
+    private LinkedList<Card> hand = new LinkedList<>();
     static private int numberOfPlayers = 1;
     private final int playerNumber;
-    private final ConcurrentLinkedQueue<Card> drawDeck;
-    private final ConcurrentLinkedQueue<Card> discardDeck;
-    private ArrayList<String> history;
+    private final CardDeck drawDeck;
+    private final CardDeck discardDeck;
+    private ArrayList<String> history = new ArrayList<>();
     static volatile private Player winner;
     private int turn = 0;
     static volatile private int maxTurn = Integer.MAX_VALUE;
 
-    public Player(ConcurrentLinkedQueue<Card> drawDeck, ConcurrentLinkedQueue<Card> discardDeck){
+    public Player(CardDeck drawDeck, CardDeck discardDeck){
         this.discardDeck = discardDeck;
         this.drawDeck = drawDeck;
         playerNumber = numberOfPlayers;
@@ -23,8 +23,8 @@ public class Player {
 
     private void writeHistory(){}
 
-    private int draw(){
-        Card card = drawDeck.remove();
+    private synchronized int draw(){
+        Card card = drawDeck.removeCard();
         hand.add(card);
         return card.getNumber();
     }
@@ -39,14 +39,15 @@ public class Player {
         Random rnd = new Random();
         int removeIndex = possibleDiscards.get(rnd.nextInt(0,possibleDiscards.size()));
         Card discardedCard = hand.remove(removeIndex);
-        discardDeck.add(discardedCard);
+        discardDeck.addCard(discardedCard);
         return discardedCard.getNumber();
     }
 
-    public int makeTurn(){
+    public synchronized int makeTurn(){
         turn++;
         int drawnNumber = draw();
         int discardNumber = discard();
+        System.out.println("" + playerNumber + " " + turn + " " + hand + " " + maxTurn);
         history.add("player " + playerNumber + " draws a " + drawnNumber + " from deck " + playerNumber);
         history.add("player " + playerNumber + "discards a " + discardNumber + " from deck " + (playerNumber + 1 == numberOfPlayers ? 0:playerNumber));
         history.add("player " + playerNumber + " current hand is " + hand.toString().replaceAll("[,]|[]]|[\\[]",""));
@@ -55,6 +56,9 @@ public class Player {
 
     public void receiveCard(Card card) {
         hand.add(card);
+        if (hand.size() == 4) {
+            history.add("player " + playerNumber + " initial hand " + hand.toString().replaceAll("[,]|[]]|[\\[]",""));
+        }
     }
 
     private int hasWon(){
