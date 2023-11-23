@@ -8,8 +8,9 @@ public class CardGame {
     private ArrayList<Card> pack = new ArrayList<>();
     private final ArrayList<CardDeck> decks;
     private final Player[] players;
-    private ArrayList<Integer> finishedPlayers = new ArrayList<>();
-    private volatile int maxTurn = Integer.MAX_VALUE;
+    private ConcurrentLinkedQueue<Integer> finishedPlayers = new ConcurrentLinkedQueue<>();
+    private volatile boolean haswon = false;
+    private volatile int winningPlayer;
 
     public static void main(String[] args){
         Scanner in = new Scanner(System.in);
@@ -62,7 +63,7 @@ public class CardGame {
         }
 
         for (int i = 0; i < this.playerNumber; i++) {
-            Player tempPlayer = new Player(decks.get(i), decks.get(i == this.playerNumber - 1?1:(i + 1)));
+            Player tempPlayer = new Player(decks.get(i), decks.get(i == this.playerNumber - 1?0:(i + 1)));
             players[i] = tempPlayer;
         }
     }
@@ -71,17 +72,15 @@ public class CardGame {
             Thread playerThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while(player.getTurn() < maxTurn){
-                        int temp =  player.makeTurn();
-                        if (temp < maxTurn) {
-                            maxTurn = temp;
+                    while(!haswon){
+                        boolean temp = player.makeTurn();
+                        if (temp) {
+                            haswon = true;
+                            winningPlayer = player.getPlayerNumber();
+                            System.out.println("player " + player.getPlayerNumber() + " has won");
                         }
                     }
-                    finishedPlayers.add(player.getPlayerNumber());
-                    System.out.println(finishedPlayers);
-                    if (finishedPlayers.size() == 4) {
-                        System.out.println("hey");
-                    }
+                    player.writeHistory(winningPlayer);
                 }
             });
             playerThread.start();
@@ -132,6 +131,10 @@ public class CardGame {
             }
         }
 
+
+    }
+
+    private void finishGame(Player winningPlayer) {
 
     }
 }
