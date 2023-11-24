@@ -4,40 +4,31 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 public class CardDeck {
-    private volatile LinkedList<Card> deck = new LinkedList<>();
+    private final LinkedList<Card> DECK = new LinkedList<>();
     private static int numDecks = 1;
-    private int deckNum;
+    private final int DECK_NUM;
     public CardDeck(){
-        deckNum = numDecks;
+        DECK_NUM = numDecks;
         numDecks++;
     }
-
     public synchronized Card removeCard(){
-        while(deck.size() == 0){
+        while(DECK.size() == 0){
             try{
                 wait();
             } catch (InterruptedException ignored){}
         }
-        notify();
-        return deck.removeFirst();
+        return DECK.removeFirst();
     }
-
     public synchronized void addCard(Card card){
-        while(deck.size() == 4){
-            try{
-                wait();
-            } catch (InterruptedException ignored){}
-        }
-        deck.add(card);
+        DECK.add(card);
         notify();
     }
-
     public void writeHistory() {
-        File deckFile = new File("deck" + deckNum + "_output.txt");
+        File deckFile = new File("deck" + DECK_NUM + "_output.txt");
         try {
             deckFile.createNewFile();
-            FileWriter writer = new FileWriter("deck" + deckNum + "_output.txt");
-            writer.write("deck" + deckNum + " contents:" + deck.toString().replaceAll("[,]|[]]|[\\[]", ""));
+            FileWriter writer = new FileWriter("deck" + DECK_NUM + "_output.txt");
+            writer.write("deck" + DECK_NUM + " contents:" + DECK.toString().replaceAll("[,]|[]]|[\\[]", ""));
             writer.close();
         } catch(IOException ignore) {
         }

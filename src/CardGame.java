@@ -1,15 +1,13 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CardGame {
-    private final int playerNumber;
+    private final int NUM_OF_PLAYERS;
     private ArrayList<Card> pack = new ArrayList<>();
-    private final ArrayList<CardDeck> decks;
-    private final Player[] players;
-    private ConcurrentLinkedQueue<Integer> finishedPlayers = new ConcurrentLinkedQueue<>();
-    private volatile boolean haswon = false;
+    private final ArrayList<CardDeck> DECKS;
+    private final Player[] PLAYERS;
+    private volatile boolean playerWon = false;
     private volatile int winningPlayer;
 
     public static void main(String[] args){
@@ -39,8 +37,7 @@ public class CardGame {
         game.dealDeck();
         game.playGame();
     }
-
-    public static boolean isValidPlayers(String testNumber){
+    private static boolean isValidPlayers(String testNumber){
         int number;
         try{
             number = Integer.parseInt(testNumber);
@@ -50,49 +47,47 @@ public class CardGame {
         }
         return number >= 2;
     }
+    private CardGame(int numOfPlayers) {
+        this.NUM_OF_PLAYERS = numOfPlayers;
+        PLAYERS = new Player[numOfPlayers];
+        DECKS = new ArrayList<>();
 
-
-    public CardGame(int playerNumber) {
-        this.playerNumber = playerNumber;
-        players = new Player[playerNumber];
-        decks = new ArrayList<>();
-
-        for (int i = 0; i < this.playerNumber; i++) {
+        for (int i = 0; i < this.NUM_OF_PLAYERS; i++) {
             CardDeck tempDeck = new CardDeck();
-            decks.add(tempDeck);
+            DECKS.add(tempDeck);
         }
 
-        for (int i = 0; i < this.playerNumber; i++) {
-            Player tempPlayer = new Player(decks.get(i), decks.get(i == this.playerNumber - 1?0:(i + 1)));
-            players[i] = tempPlayer;
+        for (int i = 0; i < this.NUM_OF_PLAYERS; i++) {
+            Player tempPlayer = new Player(DECKS.get(i), DECKS.get(i == this.NUM_OF_PLAYERS - 1?0:(i + 1)));
+            PLAYERS[i] = tempPlayer;
         }
     }
-    public void playGame() {
-        for(Player player : players){
+    private void playGame() {
+        for(Player player : PLAYERS){
             Thread playerThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while(!haswon){
+                    while(!playerWon){
                         boolean temp = player.makeTurn();
                         if (temp) {
-                            haswon = true;
+                            playerWon = true;
                             winningPlayer = player.getPlayerNumber();
                             System.out.println("player " + player.getPlayerNumber() + " has won");
                         }
                     }
                     player.writeHistory(winningPlayer);
+                    DECKS.get(player.getPlayerNumber() - 1).writeHistory();
                 }
             });
             playerThread.start();
         }
     }
-
     private boolean readDeck(String Filename){
         File readFile = new File(Filename);
         Scanner openedPack;
         try {
             openedPack = new Scanner(readFile);
-            for (int i = 0; i < (playerNumber * 8); i++) {
+            for (int i = 0; i < (NUM_OF_PLAYERS * 8); i++) {
                 int data;
                 try{
                     data = Integer.parseInt(openedPack.nextLine());
@@ -118,23 +113,18 @@ public class CardGame {
         pack = new ArrayList<>();
         return false;
     }
-
     private void dealDeck() {
         for(int i = 0; i < 4; i++) {
-            for (Player emptyplayer : players) {
+            for (Player emptyplayer : PLAYERS) {
                 emptyplayer.receiveCard(pack.remove(0));
             }
         }
         for(int i = 0; i < 4; i++) {
-            for (CardDeck emptyDecks : decks) {
+            for (CardDeck emptyDecks : DECKS) {
                 emptyDecks.addCard(pack.remove(0));
             }
         }
 
-
-    }
-
-    private void finishGame(Player winningPlayer) {
 
     }
 }
