@@ -33,7 +33,7 @@ public class Player {
             } else {
                 writer.write("player " + winningPlayer + " has informed player " + PLAYER_NUMBER + " that player " + winningPlayer + " has won\n");
             }
-            writer.write("player " + PLAYER_NUMBER + " exits\n" + "player" + PLAYER_NUMBER + " final hand:" + HAND.toString().replaceAll("[,]|[]]|[\\[]", ""));
+            writer.write("player " + PLAYER_NUMBER + " exits\n" + "player " + PLAYER_NUMBER + " final hand:" + HAND.toString().replaceAll("[,]|[]]|[\\[]", ""));
             writer.close();
         } catch(IOException ignore) {
         }
@@ -63,7 +63,7 @@ public class Player {
         int drawnNumber = draw();
         int discardNumber = discard();
         HISTORY.add("player " + PLAYER_NUMBER + " draws a " + drawnNumber + " from deck " + PLAYER_NUMBER);
-        HISTORY.add("player " + PLAYER_NUMBER + " discards a " + discardNumber + " from deck " + (PLAYER_NUMBER + 1 == numberOfPlayers ? 0: PLAYER_NUMBER));
+        HISTORY.add("player " + PLAYER_NUMBER + " discards a " + discardNumber + " from deck " + (PLAYER_NUMBER + 1 == numberOfPlayers ? 1: PLAYER_NUMBER));
         HISTORY.add("player " + PLAYER_NUMBER + " current hand is " + HAND.toString().replaceAll("[,]|[]]|[\\[]",""));
         return hasWon();
     }

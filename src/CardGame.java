@@ -3,14 +3,16 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class CardGame {
-    private final int NUM_OF_PLAYERS;
+    private int numOfPlayers;
     private ArrayList<Card> pack = new ArrayList<>();
-    private final ArrayList<CardDeck> DECKS;
-    private final Player[] PLAYERS;
+    private ArrayList<CardDeck> decks;
+    private Player[] players;
     private volatile boolean playerWon = false;
     private volatile int winningPlayer;
 
     public static void main(String[] args){
+        CardGame game = new CardGame();
+
         Scanner in = new Scanner(System.in);
         String strNumPlayers = "";
         boolean invalid = true;
@@ -23,7 +25,8 @@ public class CardGame {
             }
         }
         int numPlayers = Integer.parseInt(strNumPlayers);
-        CardGame game = new CardGame(numPlayers);
+
+        game.createDecksAndPlayers(numPlayers);
 
         invalid = true;
         while(invalid){
@@ -34,7 +37,7 @@ public class CardGame {
                 System.out.println("You have entered an invalid file location");
             }
         }
-        game.dealDeck();
+        game.dealPack();
         game.playGame();
     }
     private static boolean isValidPlayers(String testNumber){
@@ -47,47 +50,12 @@ public class CardGame {
         }
         return number >= 2;
     }
-    private CardGame(int numOfPlayers) {
-        this.NUM_OF_PLAYERS = numOfPlayers;
-        PLAYERS = new Player[numOfPlayers];
-        DECKS = new ArrayList<>();
-
-        for (int i = 0; i < this.NUM_OF_PLAYERS; i++) {
-            CardDeck tempDeck = new CardDeck();
-            DECKS.add(tempDeck);
-        }
-
-        for (int i = 0; i < this.NUM_OF_PLAYERS; i++) {
-            Player tempPlayer = new Player(DECKS.get(i), DECKS.get(i == this.NUM_OF_PLAYERS - 1?0:(i + 1)));
-            PLAYERS[i] = tempPlayer;
-        }
-    }
-    private void playGame() {
-        for(Player player : PLAYERS){
-            Thread playerThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while(!playerWon){
-                        boolean temp = player.makeTurn();
-                        if (temp) {
-                            playerWon = true;
-                            winningPlayer = player.getPlayerNumber();
-                            System.out.println("player " + player.getPlayerNumber() + " has won");
-                        }
-                    }
-                    player.writeHistory(winningPlayer);
-                    DECKS.get(player.getPlayerNumber() - 1).writeHistory();
-                }
-            });
-            playerThread.start();
-        }
-    }
     private boolean readDeck(String Filename){
         File readFile = new File(Filename);
         Scanner openedPack;
         try {
             openedPack = new Scanner(readFile);
-            for (int i = 0; i < (NUM_OF_PLAYERS * 8); i++) {
+            for (int i = 0; i < (numOfPlayers * 8); i++) {
                 int data;
                 try{
                     data = Integer.parseInt(openedPack.nextLine());
@@ -95,7 +63,7 @@ public class CardGame {
                     pack = new ArrayList<>();
                     return false;
                 }
-                if(data < 0){
+                if(data < 1){
                     return false;
                 }
                 Card newCard = new Card(data);
@@ -113,14 +81,49 @@ public class CardGame {
         pack = new ArrayList<>();
         return false;
     }
-    private void dealDeck() {
+    private void createDecksAndPlayers(int numOfPlayers){
+        this.numOfPlayers = numOfPlayers;
+        players = new Player[numOfPlayers];
+        decks = new ArrayList<>();
+
+        for (int i = 0; i < this.numOfPlayers; i++) {
+            CardDeck tempDeck = new CardDeck();
+            decks.add(tempDeck);
+        }
+
+        for (int i = 0; i < this.numOfPlayers; i++) {
+            Player tempPlayer = new Player(decks.get(i), decks.get(i == this.numOfPlayers - 1?0:(i + 1)));
+            players[i] = tempPlayer;
+        }
+    }
+    private void playGame() {
+        for(Player player : players){
+            Thread playerThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(!playerWon){
+                        boolean temp = player.makeTurn();
+                        if (temp) {
+                            winningPlayer = player.getPlayerNumber();
+                            playerWon = true;
+                            System.out.println("player " + player.getPlayerNumber() + " has won");
+                        }
+                    }
+                    player.writeHistory(winningPlayer);
+                    decks.get(player.getPlayerNumber() - 1).writeHistory();
+                }
+            });
+            playerThread.start();
+        }
+    }
+    private void dealPack() {
         for(int i = 0; i < 4; i++) {
-            for (Player emptyplayer : PLAYERS) {
+            for (Player emptyplayer : players) {
                 emptyplayer.receiveCard(pack.remove(0));
             }
         }
         for(int i = 0; i < 4; i++) {
-            for (CardDeck emptyDecks : DECKS) {
+            for (CardDeck emptyDecks : decks) {
                 emptyDecks.addCard(pack.remove(0));
             }
         }

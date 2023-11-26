@@ -2,6 +2,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.lang.reflect.*;
+import java.util.Objects;
 
 public class CardDeck {
     private final LinkedList<Card> DECK = new LinkedList<>();
@@ -25,6 +27,7 @@ public class CardDeck {
     }
     public void writeHistory() {
         File deckFile = new File("deck" + DECK_NUM + "_output.txt");
+        Object cd = new CardDeck();
         try {
             deckFile.createNewFile();
             FileWriter writer = new FileWriter("deck" + DECK_NUM + "_output.txt");
