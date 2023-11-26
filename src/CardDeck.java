@@ -31,7 +31,7 @@ public class CardDeck {
         try {
             deckFile.createNewFile();
             FileWriter writer = new FileWriter("deck" + DECK_NUM + "_output.txt");
-            writer.write("deck" + DECK_NUM + " contents:" + DECK.toString().replaceAll("[,]|[]]|[\\[]", ""));
+            writer.write("deck" + DECK_NUM + " contents: " + DECK.toString().replaceAll("[,]|[]]|[\\[]", ""));
             writer.close();
         } catch(IOException ignore) {
         }
