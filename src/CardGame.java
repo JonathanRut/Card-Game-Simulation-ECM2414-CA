@@ -29,11 +29,11 @@ public class CardGame {
         game.createDecksAndPlayers(numPlayers);
 
         invalid = true;
-        while(invalid){
+        while(invalid) {
             System.out.println("Please enter the location of the pack to load: ");
             String fileLocation = in.nextLine();
             invalid = !game.readDeck(fileLocation);
-            if(invalid){
+            if (invalid) {
                 System.out.println("You have entered an invalid file location");
             }
         }

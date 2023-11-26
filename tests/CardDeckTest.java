@@ -46,164 +46,110 @@ public class CardDeckTest {
         });
         addThread.start();
         emptyDeck.removeCard();
-        Field field = null;
         try {
-            field = ((Object)emptyDeck).getClass().getDeclaredField("DECK");
-        } catch (NoSuchFieldException e) {
+            Field field = ((Object)emptyDeck).getClass().getDeclaredField("DECK");
+            field.setAccessible(true);
+            LinkedList<Card> deck = (LinkedList<Card>) field.get(emptyDeck);
+            assertEquals(deck.size(), 0);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             fail();
         }
-        field.setAccessible(true);
-        LinkedList<Card> deck = null;
-        try {
-            deck = (LinkedList<Card>) field.get(emptyDeck);
-        } catch (IllegalAccessException e) {
-            fail();
-        }
-        assertEquals(deck.size(), 0);
     }
 
     @Test
     public void testOneCardRemoveCard(){
         oneCardDeck.removeCard();
-        Field field = null;
         try {
-            field = ((Object)oneCardDeck).getClass().getDeclaredField("DECK");
-        } catch (NoSuchFieldException e) {
+            Field field = ((Object)oneCardDeck).getClass().getDeclaredField("DECK");
+            field.setAccessible(true);
+            LinkedList<Card> deck = (LinkedList<Card>) field.get(oneCardDeck);
+            assertEquals(deck.size(), 0);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             fail();
         }
-        field.setAccessible(true);
-        LinkedList<Card> deck = null;
-        try {
-            deck = (LinkedList<Card>) field.get(oneCardDeck);
-        } catch (IllegalAccessException e) {
-            fail();
-        }
-        assertEquals(deck.size(), 0);
     }
 
     @Test
     public void testFilledRemoveCard(){
         filledDeck.removeCard();
-        Field field = null;
         try {
-            field = ((Object)filledDeck).getClass().getDeclaredField("DECK");
-        } catch (NoSuchFieldException e) {
+            Field field = ((Object)filledDeck).getClass().getDeclaredField("DECK");
+            field.setAccessible(true);
+            LinkedList<Card> deck = (LinkedList<Card>) field.get(filledDeck);
+            assertEquals(deck.size(), 1);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             fail();
         }
-        field.setAccessible(true);
-        LinkedList<Card> deck = null;
-        try {
-            deck = (LinkedList<Card>) field.get(filledDeck);
-        } catch (IllegalAccessException e) {
-            fail();
-        }
-        assertEquals(deck.size(), 1);
     }
 
     @Test
     public void testEmptyAddCard() {
         emptyDeck.addCard(new Card(7));
-        Field field = null;
         try {
-            field = ((Object)emptyDeck).getClass().getDeclaredField("DECK");
-        } catch (NoSuchFieldException e) {
+            Field field = CardDeck.class.getDeclaredField("DECK");
+            field.setAccessible(true);
+            LinkedList<Card> deck = (LinkedList<Card>) field.get(emptyDeck);
+            assert deck.peekFirst() != null;
+            assertEquals(deck.peekFirst().getNumber(), 7);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             fail();
         }
-        field.setAccessible(true);
-        LinkedList<Card> deck = null;
-        try {
-            deck = (LinkedList<Card>) field.get(emptyDeck);
-        } catch (IllegalAccessException e) {
-            fail();
-        }
-        assertEquals(deck.size(), 1);
-
     }
 
     @Test
     public void testFilledAddCard(){
         filledDeck.addCard(new Card(7));
-        Field field = null;
         try {
-            field = ((Object)filledDeck).getClass().getDeclaredField("DECK");
-        } catch (NoSuchFieldException e) {
+            Field field = CardDeck.class.getDeclaredField("DECK");
+            field.setAccessible(true);
+            LinkedList<Card> deck = (LinkedList<Card>) field.get(filledDeck);
+            assertEquals(deck.get(2).getNumber(), 7);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             fail();
         }
-        field.setAccessible(true);
-        LinkedList<Card> deck = null;
-        try {
-            deck = (LinkedList<Card>) field.get(filledDeck);
-        } catch (IllegalAccessException e) {
-            fail();
-        }
-        assertEquals(deck.size(), 3);
     }
     @Test
     public void testOneCardAddCard(){
         oneCardDeck.addCard(new Card(7));
-        Field field = null;
         try {
-            field = ((Object)oneCardDeck).getClass().getDeclaredField("DECK");
-        } catch (NoSuchFieldException e) {
+            Field field = ((Object)oneCardDeck).getClass().getDeclaredField("DECK");
+            field.setAccessible(true);
+            LinkedList<Card> deck = (LinkedList<Card>) field.get(oneCardDeck);
+            assertEquals(deck.get(1).getNumber(), 7);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             fail();
         }
-        field.setAccessible(true);
-        LinkedList<Card> deck = null;
-        try {
-            deck = (LinkedList<Card>) field.get(oneCardDeck);
-        } catch (IllegalAccessException e) {
-            fail();
-        }
-        assertEquals(deck.size(), 2);
     }
     @Test
     public void testEmptyWriteHistory() {
         emptyDeck.writeHistory();
-        Field field = null;
         try {
-            field = ((Object)emptyDeck).getClass().getDeclaredField("DECK_NUM");
-        } catch (NoSuchFieldException e) {
-            fail();
-        }
-        field.setAccessible(true);
-        int deckNum = 0;
-        try {
-            deckNum = (int) field.get(emptyDeck);
-        } catch (IllegalAccessException e) {
-            fail();
-        }
-        File emptyDeckFile = new File("deck" + deckNum + "_output.txt");
-        try {
+            Field field = CardDeck.class.getDeclaredField("DECK_NUM");
+            field.setAccessible(true);
+            int deckNum = (int) field.get(emptyDeck);
+            File emptyDeckFile = new File("deck" + deckNum + "_output.txt");
             Scanner fileScanner = new Scanner(emptyDeckFile);
             assertEquals(fileScanner.nextLine(), "deck"+ deckNum + " contents: ");
-        } catch (FileNotFoundException e) {
+            emptyDeckFile.delete();
+            fileScanner.close();
+        } catch (NoSuchFieldException | IllegalAccessException | FileNotFoundException e) {
             fail();
         }
-        emptyDeckFile.delete();
     }
     @Test
     public void testFilledWriteHistory(){
         filledDeck.writeHistory();
-        Field field = null;
         try {
-            field = ((Object)filledDeck).getClass().getDeclaredField("DECK_NUM");
-        } catch (NoSuchFieldException e) {
-            fail();
-        }
-        field.setAccessible(true);
-        int deckNum = 0;
-        try {
-            deckNum = (int) field.get(filledDeck);
-        } catch (IllegalAccessException e) {
-            fail();
-        }
-        File filledDeckFile = new File("deck" +  deckNum + "_output.txt");
-        try {
+            Field field = CardDeck.class.getDeclaredField("DECK_NUM");
+            field.setAccessible(true);
+            int deckNum = (int) field.get(filledDeck);
+            File filledDeckFile = new File("deck" +  deckNum + "_output.txt");
             Scanner fileScanner = new Scanner(filledDeckFile);
             assertEquals(fileScanner.nextLine(), "deck" + deckNum + " contents: 1 2");
-        } catch (FileNotFoundException e) {
+            filledDeckFile.delete();
+            fileScanner.close();
+        } catch (NoSuchFieldException | IllegalAccessException | FileNotFoundException e) {
             fail();
         }
-        filledDeckFile.delete();
     }
 }
