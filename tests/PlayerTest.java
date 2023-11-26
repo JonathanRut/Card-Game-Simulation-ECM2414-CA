@@ -53,23 +53,26 @@ public class PlayerTest {
             Method draw = Player.class.getDeclaredMethod("draw");
             draw.setAccessible(true);
             draw.invoke(emptyDrawPlayer);
-
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            fail();
-        }
-        try{
             Field field = Player.class.getDeclaredField("HAND");
             field.setAccessible(true);
             LinkedList<Card> hand = (LinkedList<Card>) field.get(emptyDrawPlayer);
             assert hand.peekFirst() != null;
             assertEquals(hand.peekFirst().getNumber(), 7);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
             fail();
         }
     }
 
     @Test
     public void testOneDraw() {
+        try {
+            Method draw = Player.class.getDeclaredMethod("draw");
+            draw.setAccessible(true);
+            draw.invoke(oneDrawPlayer);
+
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            fail();
+        }
 
     }
 
