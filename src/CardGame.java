@@ -12,36 +12,38 @@ public class CardGame {
 
     public static void main(String[] args){
         CardGame game = new CardGame();
-
-        Scanner in = new Scanner(System.in);
-        String strNumPlayers = "";
-        boolean invalid = true;
-        while(invalid) {
-            System.out.println("Please enter the number of players: ");
-            strNumPlayers = in.nextLine();
-            invalid = !isValidPlayers(strNumPlayers);
-            if(invalid){
-                System.out.println("Number must be integer greater than or equal to 2");
-            }
-        }
-        int numPlayers = Integer.parseInt(strNumPlayers);
-
+        int numPlayers = game.inputNumPlayers();
         game.createDecksAndPlayers(numPlayers);
-
-        invalid = true;
-        while(invalid){
-            System.out.println("Please enter the location of the pack to load: ");
-            String fileLocation = in.nextLine();
-            invalid = !game.readDeck(fileLocation);
-            if(invalid){
-                System.out.println("You have entered an invalid file location");
-            }
-        }
+        game.inputPackLocation();
         game.dealPack();
         game.playGame();
     }
+    private int inputNumPlayers() {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter the number of players: ");
+        String strNumPlayers = in.nextLine();
+        while(!isValidPlayers(strNumPlayers)) {
+            System.out.println("Number must be integer greater than or equal to 2");
+            System.out.println("Please enter the number of players: ");
+            strNumPlayers = in.nextLine();
+        }
+        return Integer.parseInt(strNumPlayers);
+    }
+
+    private void inputPackLocation() {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Please enter the location of the pack to load: ");
+        String fileLocation = in.nextLine();
+        while (!readDeck(fileLocation)) {
+            System.out.println("You have entered an invalid file location");
+            System.out.println("Please enter the location of the pack to load: ");
+            fileLocation = in.nextLine();
+        }
+    }
+
     private static boolean isValidPlayers(String testNumber){
         int number;
+
         try{
             number = Integer.parseInt(testNumber);
         }
