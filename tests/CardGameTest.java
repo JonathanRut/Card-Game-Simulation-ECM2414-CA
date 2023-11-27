@@ -37,6 +37,7 @@ public class CardGameTest {
         openedpack = null;
         pack.delete();
         pack = null;
+        game = null;
     }
 
     @Test
@@ -56,7 +57,7 @@ public class CardGameTest {
         try {
             Method isValidPlayers = CardGame.class.getDeclaredMethod("isValidPlayers", String.class);
             isValidPlayers.setAccessible(true);
-            assertEquals(isValidPlayers.invoke(game,"0"), false);
+            assertEquals(isValidPlayers.invoke(game, "0"), false);
 
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             fail();
@@ -66,9 +67,9 @@ public class CardGameTest {
     @Test
     public void testValidPlayersNegative() {
         try {
-            Method isValidPlayers = CardGame.class.getDeclaredMethod("isValidPlayers");
+            Method isValidPlayers = CardGame.class.getDeclaredMethod("isValidPlayers", String.class);
             isValidPlayers.setAccessible(true);
-            assertEquals(isValidPlayers.invoke("-2"), false);
+            assertEquals(isValidPlayers.invoke(game, "-2"), false);
 
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             fail();
@@ -78,9 +79,9 @@ public class CardGameTest {
     @Test
     public void testValidPlayersString() {
         try {
-            Method isValidPlayers = CardGame.class.getDeclaredMethod("isValidPlayers");
+            Method isValidPlayers = CardGame.class.getDeclaredMethod("isValidPlayers", String.class);
             isValidPlayers.setAccessible(true);
-            assertEquals(isValidPlayers.invoke("abcde"), false);
+            assertEquals(isValidPlayers.invoke(game, "abcde"), false);
 
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             fail();
@@ -90,13 +91,13 @@ public class CardGameTest {
     @Test
     public void testReadDeckSixteenPositive() {
         try {
-            Method readDeck = CardGame.class.getDeclaredMethod("readDeck");
+            Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
             readDeck.setAccessible(true);
             FileWriter writer = new FileWriter("pack_test.txt");
             for (int i = 0; i < 16; i++) {
                 writer.write("1\n");
             }
-            assertEquals(readDeck.invoke(pack), true);
+            assertEquals(readDeck.invoke(game, "pack_test.txt"), true);
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             fail();
         }
@@ -105,13 +106,13 @@ public class CardGameTest {
     @Test
     public void testReadDeckEightPositive() {
         try {
-            Method readDeck = CardGame.class.getDeclaredMethod("readDeck");
+            Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
             readDeck.setAccessible(true);
             FileWriter writer = new FileWriter("pack_test.txt");
             for (int i = 0; i < 8; i++) {
                 writer.write("1\n");
             }
-            assertEquals(readDeck.invoke(pack), false);
+            assertEquals(readDeck.invoke(game, "pack_test.txt"), false);
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             fail();
         }
@@ -120,13 +121,13 @@ public class CardGameTest {
     @Test
     public void testReadDeckTwentyFourPositive() {
         try {
-            Method readDeck = CardGame.class.getDeclaredMethod("readDeck");
+            Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
             readDeck.setAccessible(true);
             FileWriter writer = new FileWriter("pack_test.txt");
             for (int i = 0; i < 24; i++) {
                 writer.write("1\n");
             }
-            assertEquals(readDeck.invoke(pack), false);
+            assertEquals(readDeck.invoke(game, "pack_test.txt"), false);
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             fail();
         }
@@ -135,14 +136,14 @@ public class CardGameTest {
     @Test
     public void testReadDeckEightPositiveEightNegative() {
         try {
-            Method readDeck = CardGame.class.getDeclaredMethod("readDeck");
+            Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
             readDeck.setAccessible(true);
             FileWriter writer = new FileWriter("pack_test.txt");
             for (int i = 0; i < 8; i++) {
                 writer.write("1\n");
                 writer.write("-1\n");
             }
-            assertEquals(readDeck.invoke(pack), false);
+            assertEquals(readDeck.invoke(game, "pack_test.txt"), false);
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             fail();
         }
@@ -151,13 +152,13 @@ public class CardGameTest {
     @Test
     public void testReadDeckSixteenNegative() {
         try {
-            Method readDeck = CardGame.class.getDeclaredMethod("readDeck");
+            Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
             readDeck.setAccessible(true);
             FileWriter writer = new FileWriter("pack_test.txt");
             for (int i = 0; i < 16; i++) {
                 writer.write("-1\n");
             }
-            assertEquals(readDeck.invoke(pack), false);
+            assertEquals(readDeck.invoke(game, "pack_test.txt"), false);
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             fail();
         }
@@ -180,6 +181,5 @@ public class CardGameTest {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
             fail();
         }
-
     }
 }
