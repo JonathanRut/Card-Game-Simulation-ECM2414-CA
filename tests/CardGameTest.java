@@ -162,6 +162,7 @@ public class CardGameTest {
                 writer.write("1\n");
                 writer.write("-1\n");
             }
+            writer.close();
             assertEquals(false, readDeck.invoke(game, "pack_test.txt"));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  NoSuchFieldException e) {
@@ -181,6 +182,7 @@ public class CardGameTest {
             for (int i = 0; i < 16; i++) {
                 writer.write("-1\n");
             }
+            writer.close();
             assertEquals(false, readDeck.invoke(game, "pack_test.txt"));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  NoSuchFieldException e) {
@@ -198,8 +200,9 @@ public class CardGameTest {
             readDeck.setAccessible(true);
             FileWriter writer = new FileWriter("pack_test.txt");
             for (int i = 0; i < 16; i++) {
-                writer.write("11\n");
+                writer.write("1\n");
             }
+            writer.close();
             assertEquals(false, readDeck.invoke(game, "wrong_pack_test.txt"));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  NoSuchFieldException e) {
