@@ -42,9 +42,9 @@ public class CardGameTest {
     @Test
     public void testValidPlayersPositive() {
         try {
-            Method isValidPlayers = CardGame.class.getDeclaredMethod("isValidPlayers");
+            Method isValidPlayers = CardGame.class.getDeclaredMethod("isValidPlayers", String.class);
             isValidPlayers.setAccessible(true);
-            assertEquals(isValidPlayers.invoke("3"), true);
+            assertEquals(isValidPlayers.invoke(game, "3"), true);
 
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             fail();
@@ -54,9 +54,9 @@ public class CardGameTest {
     @Test
     public void testValidPlayersZero() {
         try {
-            Method isValidPlayers = CardGame.class.getDeclaredMethod("isValidPlayers");
+            Method isValidPlayers = CardGame.class.getDeclaredMethod("isValidPlayers", String.class);
             isValidPlayers.setAccessible(true);
-            assertEquals(isValidPlayers.invoke("0"), false);
+            assertEquals(isValidPlayers.invoke(game,"0"), false);
 
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             fail();
