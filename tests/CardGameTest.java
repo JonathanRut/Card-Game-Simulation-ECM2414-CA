@@ -162,6 +162,7 @@ public class CardGameTest {
                 writer.write("1\n");
                 writer.write("-1\n");
             }
+            writer.close();
             assertEquals(false, readDeck.invoke(game, "pack_test.txt"));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  NoSuchFieldException e) {
