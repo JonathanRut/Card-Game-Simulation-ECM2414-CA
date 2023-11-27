@@ -30,8 +30,6 @@ public class CardDeckTest {
         emptyDeck = null;
         filledDeck = null;
         oneCardDeck = null;
-        File filledDeckFile = new File("deck2_output.txt");
-        filledDeckFile.delete();
     }
     @Test
     public void testEmptyRemoveCard() {
@@ -137,7 +135,7 @@ public class CardDeckTest {
             File emptyDeckFile = new File("deck" + deckNum + "_output.txt");
             Scanner fileScanner = new Scanner(emptyDeckFile);
             assertEquals("deck"+ deckNum + " contents: ", fileScanner.nextLine());
-            emptyDeckFile.delete();
+            emptyDeckFile.deleteOnExit();
             fileScanner.close();
         } catch (NoSuchFieldException | IllegalAccessException | FileNotFoundException e) {
             fail();
@@ -153,7 +151,7 @@ public class CardDeckTest {
             File filledDeckFile = new File("deck" +  deckNum + "_output.txt");
             Scanner fileScanner = new Scanner(filledDeckFile);
             assertEquals("deck" + deckNum + " contents: 1 2", fileScanner.nextLine());
-            filledDeckFile.delete();
+            filledDeckFile.deleteOnExit();
             fileScanner.close();
         } catch (NoSuchFieldException | IllegalAccessException | FileNotFoundException e) {
             fail();
