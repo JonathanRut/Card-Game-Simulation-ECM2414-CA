@@ -48,12 +48,16 @@ public class CardDeck {
 
     /**
      * Adds card to the deck and notifies waiting threads
-     * @param card
+     * @param card the card added to the deck
      */
     public synchronized void addCard(Card card){
         DECK.add(card);
         notify();
     }
+
+    /**
+     * Writes the decks contents to a new file
+     */
     public void writeHistory() {
         File deckFile = new File("deck" + DECK_NUM + "_output.txt");
         Object cd = new CardDeck();
