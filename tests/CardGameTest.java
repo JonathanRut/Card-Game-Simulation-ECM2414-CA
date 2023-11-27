@@ -124,6 +124,7 @@ public class CardGameTest {
             assertEquals(false, readDeck.invoke(game, "pack_test.txt"));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  NoSuchFieldException e) {
+
             fail();
         }
     }
