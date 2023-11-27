@@ -92,6 +92,7 @@ public class CardGameTest {
     public void testReadDeckSixteenPositive(){
         try {
             Field field = CardGame.class.getDeclaredField("numOfPlayers");
+            field.setAccessible(true);
             field.set(game, 2);
             Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
             readDeck.setAccessible(true);
@@ -111,6 +112,7 @@ public class CardGameTest {
     public void testReadDeckEightPositive() {
         try {
             Field field = CardGame.class.getDeclaredField("numOfPlayers");
+            field.setAccessible(true);
             field.set(game, 2);
             Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
             readDeck.setAccessible(true);
@@ -130,6 +132,7 @@ public class CardGameTest {
     public void testReadDeckTwentyFourPositive() {
         try {
             Field field = CardGame.class.getDeclaredField("numOfPlayers");
+            field.setAccessible(true);
             field.set(game, 2);
             Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
             readDeck.setAccessible(true);
@@ -149,6 +152,7 @@ public class CardGameTest {
     public void testReadDeckEightPositiveEightNegative() {
         try {
             Field field = CardGame.class.getDeclaredField("numOfPlayers");
+            field.setAccessible(true);
             field.set(game, 2);
             Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
             readDeck.setAccessible(true);
@@ -168,6 +172,7 @@ public class CardGameTest {
     public void testReadDeckSixteenNegative() {
         try {
             Field field = CardGame.class.getDeclaredField("numOfPlayers");
+            field.setAccessible(true);
             field.set(game, 2);
             Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
             readDeck.setAccessible(true);
