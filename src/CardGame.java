@@ -61,7 +61,7 @@ public class CardGame {
                 int data;
                 try{
                     data = Integer.parseInt(openedPack.nextLine());
-                } catch (NumberFormatException e){
+                } catch (NumberFormatException | NoSuchElementException e){
                     pack = new ArrayList<>();
                     return false;
                 }

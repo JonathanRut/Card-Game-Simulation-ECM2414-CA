@@ -124,6 +124,7 @@ public class CardGameTest {
             assertEquals(false, readDeck.invoke(game, "pack_test.txt"));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  NoSuchFieldException e) {
+
             fail();
         }
     }
@@ -190,7 +191,7 @@ public class CardGameTest {
     @Test
     public void testCreateDecksAndPlayers() {
         try {
-            Method createDecksAndsPlayers = CardGame.class.getDeclaredMethod("createDecksAndPlayers");
+            Method createDecksAndsPlayers = CardGame.class.getDeclaredMethod("createDecksAndPlayers", int.class);
             createDecksAndsPlayers.setAccessible(true);
             createDecksAndsPlayers.invoke(game, 2);
             Field field1 = CardGame.class.getDeclaredField("players");
