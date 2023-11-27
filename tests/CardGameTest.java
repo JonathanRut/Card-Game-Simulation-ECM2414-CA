@@ -1,5 +1,6 @@
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -169,6 +170,11 @@ public class CardGameTest {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
             fail();
         }
+
+    }
+
+    @Test
+    public void name() {
 
     }
 }
