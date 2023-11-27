@@ -189,6 +189,25 @@ public class CardGameTest {
     }
 
     @Test
+    public void testReadDecksWrongFile() {
+        try {
+            Field field = CardGame.class.getDeclaredField("numOfPlayers");
+            field.setAccessible(true);
+            field.set(game, 2);
+            Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
+            readDeck.setAccessible(true);
+            FileWriter writer = new FileWriter("pack_test.txt");
+            for (int i = 0; i < 16; i++) {
+                writer.write("11\n");
+            }
+            assertEquals(false, readDeck.invoke(game, "wrong_pack_test.txt"));
+        } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
+                 NoSuchFieldException e) {
+            fail();
+        }
+    }
+
+    @Test
     public void testCreateDecksAndPlayers() {
         try {
             Method createDecksAndsPlayers = CardGame.class.getDeclaredMethod("createDecksAndPlayers", int.class);
