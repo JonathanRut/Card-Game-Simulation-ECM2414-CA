@@ -46,6 +46,7 @@ public class Player {
     }
 
     private int discard(){
+        assert HAND.size() != 0 : "To discard the hand must contain cards";
         ArrayList<Integer> possibleDiscards = new ArrayList<>();
         for(int i = 0; i < HAND.size(); i++){
             if (HAND.get(i).getNumber() != PLAYER_NUMBER){
@@ -53,6 +54,7 @@ public class Player {
             }
         }
         Random rnd = new Random();
+        assert possibleDiscards.size() != 0 : "Hand contains all preferred cards cannot discard";
         int removeIndex = possibleDiscards.get(rnd.nextInt(0,possibleDiscards.size()));
         Card discardedCard = HAND.remove(removeIndex);
         DISCARD_DECK.addCard(discardedCard);
@@ -63,7 +65,7 @@ public class Player {
         int drawnNumber = draw();
         int discardNumber = discard();
         HISTORY.add("player " + PLAYER_NUMBER + " draws a " + drawnNumber + " from deck " + PLAYER_NUMBER);
-        HISTORY.add("player " + PLAYER_NUMBER + " discards a " + discardNumber + " from deck " + (PLAYER_NUMBER + 1 == numberOfPlayers ? 1: PLAYER_NUMBER));
+        HISTORY.add("player " + PLAYER_NUMBER + " discards a " + discardNumber + " to deck " + (PLAYER_NUMBER + 1 == numberOfPlayers ? 1: PLAYER_NUMBER + 1));
         HISTORY.add("player " + PLAYER_NUMBER + " current hand is " + HAND.toString().replaceAll("[,]|[]]|[\\[]",""));
         return hasWon();
     }

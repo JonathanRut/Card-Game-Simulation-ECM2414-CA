@@ -15,22 +15,22 @@ public class CardTest {
 
     @Test
     public void testBoundaryGetNumber() {
-        assertEquals(boundryCard.getNumber(), 1);
+        assertEquals(1, boundryCard.getNumber());
     }
 
     @Test
     public void testBoundaryToString() {
-        assertEquals(boundryCard.toString(), "1");
+        assertEquals("1", boundryCard.toString());
     }
 
     @Test
     public void testTypicalGetNumber() {
-        assertEquals(typicalCard.getNumber(), 5);
+        assertEquals(5, typicalCard.getNumber());
     }
 
     @Test
     public void testTypicalToString() {
-        assertEquals(typicalCard.toString(), "5");
+        assertEquals("5", typicalCard.toString());
     }
 
     @After
