@@ -284,7 +284,7 @@ public class PlayerTest {
             int numOfPlayers = (int) numOfPlayersField.get(filledPlayer);
 
             assertEquals("player " + playerNumber + " draws a 1 from deck " + playerNumber, history.get(1));
-            assertEquals("player " + playerNumber + " discards a " + discardDeck.get(3) + " to deck "+ (playerNumber + 1 == numOfPlayers ? 1:playerNumber + 1), history.get(2));
+            assertEquals("player " + playerNumber + " discards a " + discardDeck.get(3) + " to deck "+ (playerNumber == numOfPlayers ? 1:playerNumber + 1), history.get(2));
             assertEquals("player " + playerNumber + " current hand is " + hand.toString().replaceAll("[,]|[]]|[\\[]",""), history.get(3));
             assertEquals(2, drawDeck.size());
             assertEquals(4, discardDeck.size());
