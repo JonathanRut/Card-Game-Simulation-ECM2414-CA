@@ -16,7 +16,7 @@ public class CardGameTest {
     private CardDeck deck1;
     private CardDeck deck2;
     private File pack;
-    private ArrayList<Card> openedpack = new ArrayList<>();
+    private ArrayList<Card> openedPack = new ArrayList<>();
     private CardGame game;
 
 
@@ -24,7 +24,7 @@ public class CardGameTest {
     public void setUp() throws Exception {
         deck1 = new CardDeck();
         deck2 = new CardDeck();
-        openedpack = new ArrayList<>();
+        openedPack = new ArrayList<>();
         pack = new File("pack_test.txt");
         pack.createNewFile();
         game = new CardGame();
@@ -34,7 +34,7 @@ public class CardGameTest {
     public void tearDown() throws Exception {
         deck1 = null;
         deck2 = null;
-        openedpack = null;
+        openedPack = null;
         pack.delete();
         pack = null;
         game = null;
@@ -89,19 +89,19 @@ public class CardGameTest {
     }
 
     @Test
-    public void testReadDeckSixteenPositive(){
+    public void testReadPackSixteenPositive(){
         try {
             Field field = CardGame.class.getDeclaredField("numOfPlayers");
             field.setAccessible(true);
             field.set(game, 2);
-            Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
-            readDeck.setAccessible(true);
+            Method readPack = CardGame.class.getDeclaredMethod("readPack", String.class);
+            readPack.setAccessible(true);
             FileWriter writer = new FileWriter("pack_test.txt");
             for (int i = 0; i < 16; i++) {
                 writer.write("1\n");
             }
             writer.close();
-            assertEquals(true, readDeck.invoke(game, "pack_test.txt"));
+            assertEquals(true, readPack.invoke(game, "pack_test.txt"));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  NoSuchFieldException e) {
             fail();
@@ -109,19 +109,19 @@ public class CardGameTest {
     }
 
     @Test
-    public void testReadDeckEightPositive() {
+    public void testReadPackEightPositive() {
         try {
             Field field = CardGame.class.getDeclaredField("numOfPlayers");
             field.setAccessible(true);
             field.set(game, 2);
-            Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
-            readDeck.setAccessible(true);
+            Method readPack = CardGame.class.getDeclaredMethod("readPack", String.class);
+            readPack.setAccessible(true);
             FileWriter writer = new FileWriter("pack_test.txt");
             for (int i = 0; i < 8; i++) {
                 writer.write("1\n");
             }
             writer.close();
-            assertEquals(false, readDeck.invoke(game, "pack_test.txt"));
+            assertEquals(false, readPack.invoke(game, "pack_test.txt"));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  NoSuchFieldException e) {
 
@@ -130,19 +130,19 @@ public class CardGameTest {
     }
 
     @Test
-    public void testReadDeckTwentyFourPositive() {
+    public void testReadPackTwentyFourPositive() {
         try {
             Field field = CardGame.class.getDeclaredField("numOfPlayers");
             field.setAccessible(true);
             field.set(game, 2);
-            Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
-            readDeck.setAccessible(true);
+            Method readPack = CardGame.class.getDeclaredMethod("readPack", String.class);
+            readPack.setAccessible(true);
             FileWriter writer = new FileWriter("pack_test.txt");
             for (int i = 0; i < 24; i++) {
                 writer.write("1\n");
             }
             writer.close();
-            assertEquals(false, readDeck.invoke(game, "pack_test.txt"));
+            assertEquals(false, readPack.invoke(game, "pack_test.txt"));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  NoSuchFieldException e) {
             fail();
@@ -150,20 +150,20 @@ public class CardGameTest {
     }
 
     @Test
-    public void testReadDeckEightPositiveEightNegative() {
+    public void testReadPackEightPositiveEightNegative() {
         try {
             Field field = CardGame.class.getDeclaredField("numOfPlayers");
             field.setAccessible(true);
             field.set(game, 2);
-            Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
-            readDeck.setAccessible(true);
+            Method readPack = CardGame.class.getDeclaredMethod("readPack", String.class);
+            readPack.setAccessible(true);
             FileWriter writer = new FileWriter("pack_test.txt");
             for (int i = 0; i < 8; i++) {
                 writer.write("1\n");
                 writer.write("-1\n");
             }
             writer.close();
-            assertEquals(false, readDeck.invoke(game, "pack_test.txt"));
+            assertEquals(false, readPack.invoke(game, "pack_test.txt"));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  NoSuchFieldException e) {
             fail();
@@ -171,19 +171,19 @@ public class CardGameTest {
     }
 
     @Test
-    public void testReadDeckSixteenNegative() {
+    public void testReadPackSixteenNegative() {
         try {
             Field field = CardGame.class.getDeclaredField("numOfPlayers");
             field.setAccessible(true);
             field.set(game, 2);
-            Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
-            readDeck.setAccessible(true);
+            Method readPack = CardGame.class.getDeclaredMethod("readPack", String.class);
+            readPack.setAccessible(true);
             FileWriter writer = new FileWriter("pack_test.txt");
             for (int i = 0; i < 16; i++) {
                 writer.write("-1\n");
             }
             writer.close();
-            assertEquals(false, readDeck.invoke(game, "pack_test.txt"));
+            assertEquals(false, readPack.invoke(game, "pack_test.txt"));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  NoSuchFieldException e) {
             fail();
@@ -191,19 +191,19 @@ public class CardGameTest {
     }
 
     @Test
-    public void testReadDecksWrongFile() {
+    public void testReadPackWrongFile() {
         try {
             Field field = CardGame.class.getDeclaredField("numOfPlayers");
             field.setAccessible(true);
             field.set(game, 2);
-            Method readDeck = CardGame.class.getDeclaredMethod("readDeck", String.class);
-            readDeck.setAccessible(true);
+            Method readPack = CardGame.class.getDeclaredMethod("readPack", String.class);
+            readPack.setAccessible(true);
             FileWriter writer = new FileWriter("pack_test.txt");
             for (int i = 0; i < 16; i++) {
                 writer.write("1\n");
             }
             writer.close();
-            assertEquals(false, readDeck.invoke(game, "wrong_pack_test.txt"));
+            assertEquals(false, readPack.invoke(game, "wrong_pack_test.txt"));
         } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  NoSuchFieldException e) {
             fail();

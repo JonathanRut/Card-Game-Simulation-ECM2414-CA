@@ -29,6 +29,7 @@ public class CardDeck {
      * CardDeck constructor sets the decks number
      */
     public CardDeck(){
+        // Increments the static field by one and then sets the decks number
         numDecks++;
         DECK_NUM = numDecks;
     }
@@ -38,11 +39,14 @@ public class CardDeck {
      * @return the card removed from the deck
      */
     public synchronized Card removeCard(){
+        // The threads should wait for a card to be added while the deck is empty
         while(DECK.size() == 0){
             try{
                 wait();
             } catch (InterruptedException ignored){}
         }
+
+        // Once there are cards in the deck the top card of the deck is removed and returned
         return DECK.removeFirst();
     }
 
@@ -51,6 +55,7 @@ public class CardDeck {
      * @param card the card added to the deck
      */
     public synchronized void addCard(Card card){
+        // The card is added to the deck then waiting threads are notified
         DECK.add(card);
         notify();
     }
@@ -59,14 +64,17 @@ public class CardDeck {
      * Writes the decks contents to a new file
      */
     public void writeHistory() {
+        // A File is created to store the deck
         File deckFile = new File("deck" + DECK_NUM + "_output.txt");
-        Object cd = new CardDeck();
         try {
             deckFile.createNewFile();
+
+            // A writer is then created to write the deck
             FileWriter writer = new FileWriter("deck" + DECK_NUM + "_output.txt");
+
+            // The contents of the deck is written then writer is closed
             writer.write("deck" + DECK_NUM + " contents: " + DECK.toString().replaceAll("[,]|[]]|[\\[]", ""));
             writer.close();
-        } catch(IOException ignore) {
-        }
+        } catch(IOException ignore) {}
     }
 }

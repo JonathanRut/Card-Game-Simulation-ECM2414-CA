@@ -15,6 +15,7 @@ public class Card {
      * @param number the number of the card
      */
     public Card(int number){
+        // Asserts the number is a positive integer and then sets the number field
         assert number >= 1 : "Card number must be a non-negative integer";
         this.NUMBER = number;
     }
