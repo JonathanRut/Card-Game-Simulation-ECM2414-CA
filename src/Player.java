@@ -71,12 +71,13 @@ public class Player {
             // The if statement handles what to write if the current player has won or if another player has won
             if (PLAYER_NUMBER == winningPlayer)  {
                 writer.write("player " + PLAYER_NUMBER + " wins\n");
+                writer.write("player " + PLAYER_NUMBER + " exits\n" + "player " + PLAYER_NUMBER + " final hand: " + HAND.toString().replaceAll("[,]|[]]|[\\[]", ""));
             } else {
                 writer.write("player " + winningPlayer + " has informed player " + PLAYER_NUMBER + " that player " + winningPlayer + " has won\n");
+                writer.write("player " + PLAYER_NUMBER + " exits\n" + "player " + PLAYER_NUMBER + " hand: " + HAND.toString().replaceAll("[,]|[]]|[\\[]", ""));
             }
 
-            // The final line is written then the writer is closed
-            writer.write("player " + PLAYER_NUMBER + " exits\n" + "player " + PLAYER_NUMBER + " final hand:" + HAND.toString().replaceAll("[,]|[]]|[\\[]", ""));
+            // The writer is closed to save the file
             writer.close();
         } catch(IOException ignore) {
         }
@@ -132,6 +133,11 @@ public class Player {
      * @return a boolean indicating if the player has won or lost in that turn
      */
     public boolean makeTurn(){
+        // This if statement handles the case if the player wins on their initial hand
+        if(hasWon()){
+            return true;
+        }
+
         // A card is drawn and then discarded the numbers of the card drawn and discarded are stored
         int drawnNumber = draw();
         int discardNumber = discard();

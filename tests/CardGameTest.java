@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import static org.junit.Assert.*;
 
@@ -18,6 +19,9 @@ public class CardGameTest {
     private File pack;
     private ArrayList<Card> openedPack = new ArrayList<>();
     private CardGame game;
+    private CardGame twoPlayerDealGame;
+    private CardGame fourPlayerDealGame;
+    private CardGame twoPlayerGame;
 
 
     @Before
@@ -28,6 +32,37 @@ public class CardGameTest {
         pack = new File("pack_test.txt");
         pack.createNewFile();
         game = new CardGame();
+        twoPlayerDealGame = new CardGame();
+        Field packField = CardGame.class.getDeclaredField("pack");
+        packField.setAccessible(true);
+        ArrayList<Card> pack = new ArrayList<>();
+        for(int i = 0; i < 16; i++){
+            pack.add(new Card(7));
+        }
+        packField.set(twoPlayerDealGame, pack);
+
+        Method createDecksAndPlayers = CardGame.class.getDeclaredMethod("createDecksAndPlayers", int.class);
+        createDecksAndPlayers.setAccessible(true);
+        createDecksAndPlayers.invoke(twoPlayerDealGame,2);
+
+        fourPlayerDealGame = new CardGame();
+        pack = new ArrayList<>();
+        for(int i = 0; i < 32; i++){
+            pack.add(new Card(7));
+        }
+        packField.set(fourPlayerDealGame, pack);
+        createDecksAndPlayers.invoke(fourPlayerDealGame,4);
+
+        twoPlayerGame = new CardGame();
+        pack = new ArrayList<>();
+        for(int i = 0; i < 16; i++){
+            pack.add(new Card(7));
+        }
+        packField.set(twoPlayerGame, pack);
+        createDecksAndPlayers.invoke(twoPlayerGame,2);
+        Method dealPack = CardGame.class.getDeclaredMethod("dealPack");
+        dealPack.setAccessible(true);
+        dealPack.invoke(twoPlayerGame);
     }
 
     @After
@@ -38,6 +73,8 @@ public class CardGameTest {
         pack.delete();
         pack = null;
         game = null;
+        twoPlayerDealGame = null;
+        twoPlayerGame = null;
     }
 
     @Test
@@ -225,6 +262,122 @@ public class CardGameTest {
             assertTrue(decks.size() == 2 && 2 == players.length);
 
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | NoSuchFieldException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testTwoPlayersDealPack() {
+        try {
+            Method dealPack = CardGame.class.getDeclaredMethod("dealPack");
+            dealPack.setAccessible(true);
+            dealPack.invoke(twoPlayerDealGame);
+            Field playersField = CardGame.class.getDeclaredField("players");
+            Field decksField = CardGame.class.getDeclaredField("decks");
+            playersField.setAccessible(true);
+            decksField.setAccessible(true);
+            Player[] players = (Player[]) playersField.get(twoPlayerDealGame);
+            ArrayList<CardDeck> decks = (ArrayList<CardDeck>) decksField.get(twoPlayerDealGame);
+
+            for(Player player : players){
+                Field handField = Player.class.getDeclaredField("HAND");
+                handField.setAccessible(true);
+                LinkedList<Card> hand = (LinkedList<Card>) handField.get(player);
+                assertEquals(4, hand.size());
+            }
+
+            for(CardDeck deck : decks){
+                Field deckField = CardDeck.class.getDeclaredField("DECK");
+                deckField.setAccessible(true);
+                LinkedList<Card> cardsDeck = (LinkedList<Card>) deckField.get(deck);
+                assertEquals(4, cardsDeck.size());
+            }
+
+        } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            fail();
+        }
+
+    }
+
+    @Test
+    public void testFourPlayersDealPack() {
+        try {
+            Method dealPack = CardGame.class.getDeclaredMethod("dealPack");
+            dealPack.setAccessible(true);
+            dealPack.invoke(fourPlayerDealGame);
+            Field playersField = CardGame.class.getDeclaredField("players");
+            Field decksField = CardGame.class.getDeclaredField("decks");
+            playersField.setAccessible(true);
+            decksField.setAccessible(true);
+            Player[] players = (Player[]) playersField.get(fourPlayerDealGame);
+            ArrayList<CardDeck> decks = (ArrayList<CardDeck>) decksField.get(fourPlayerDealGame);
+
+            for(Player player : players){
+                Field handField = Player.class.getDeclaredField("HAND");
+                handField.setAccessible(true);
+                LinkedList<Card> hand = (LinkedList<Card>) handField.get(player);
+                assertEquals(4, hand.size());
+            }
+
+            for(CardDeck deck : decks){
+                Field deckField = CardDeck.class.getDeclaredField("DECK");
+                deckField.setAccessible(true);
+                LinkedList<Card> cardsDeck = (LinkedList<Card>) deckField.get(deck);
+                assertEquals(4, cardsDeck.size());
+            }
+
+        } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testTwoPlayerPlayGame() {
+        try {
+            Method playGame = CardGame.class.getDeclaredMethod("playGame");
+            playGame.setAccessible(true);
+            playGame.invoke(twoPlayerGame);
+
+            Thread waitToFinishThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(1000);
+                        Field playersField = CardGame.class.getDeclaredField("players");
+                        Field decksField = CardGame.class.getDeclaredField("decks");
+                        playersField.setAccessible(true);
+                        decksField.setAccessible(true);
+                        Player[] players = (Player[]) playersField.get(twoPlayerGame);
+                        ArrayList<CardDeck> decks = (ArrayList<CardDeck>) decksField.get(twoPlayerGame);
+
+                        Field playerWonField = CardGame.class.getDeclaredField("playerWon");
+                        playerWonField.setAccessible(true);
+                        boolean playerWon = (boolean) playerWonField.get(twoPlayerGame);
+                        assertTrue(playerWon);
+                        for(Player player : players){
+                            File saveFile = new File("player" + player.getPlayerNumber() + "_output.txt");
+                            assertTrue(saveFile.exists());
+                            saveFile.delete();
+                        }
+
+                        for(CardDeck deck : decks){
+                            Field deckNumField = CardDeck.class.getDeclaredField("DECK_NUM");
+                            deckNumField.setAccessible(true);
+                            int deckNum = (int) deckNumField.get(deck);
+                            File saveFile = new File("deck" + deckNum + "_output.txt");
+                            assertTrue(saveFile.exists());
+                            saveFile.delete();
+                        }
+                    } catch (InterruptedException | NoSuchFieldException | IllegalAccessException e) {
+                        fail();
+                    }
+                }
+            });
+            waitToFinishThread.start();
+            while (waitToFinishThread.isAlive()){
+                Thread.sleep(100);
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InterruptedException e) {
             fail();
         }
     }

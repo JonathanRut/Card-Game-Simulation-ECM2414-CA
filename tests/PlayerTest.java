@@ -2,9 +2,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
@@ -23,6 +26,9 @@ public class PlayerTest {
     private Player nearlyFullPlayer;
     private Player preferredWinner;
     private Player nonPreferredWinner;
+    private Player oneMovePlayer;
+    private CardDeck oneMoveDraw;
+    private CardDeck oneMoveDiscard;
 
     @Before
     public void setUp() throws Exception {
@@ -49,6 +55,23 @@ public class PlayerTest {
         filledPlayer.receiveCard(new Card(2));
         filledPlayer.receiveCard(new Card(3));
         filledPlayer.receiveCard(new Card(4));
+
+        oneMoveDraw = new CardDeck();
+        oneMoveDraw.addCard(new Card(1));
+        oneMoveDraw.addCard(new Card(2));
+        oneMoveDraw.addCard(new Card(3));
+
+        oneMoveDiscard = new CardDeck();
+        oneMoveDiscard.addCard(new Card(1));
+        oneMoveDiscard.addCard(new Card(2));
+        oneMoveDiscard.addCard(new Card(3));
+
+        oneMovePlayer = new Player(oneMoveDraw,oneMoveDiscard);
+        oneMovePlayer.receiveCard(new Card(1));
+        oneMovePlayer.receiveCard(new Card(2));
+        oneMovePlayer.receiveCard(new Card(3));
+        oneMovePlayer.receiveCard(new Card(4));
+        oneMovePlayer.makeTurn();
 
         nearlyFullPlayer = new Player(emptyDrawDeck,emptyDiscardDeck);
         nearlyFullPlayer.receiveCard(new Card(1));
@@ -82,6 +105,9 @@ public class PlayerTest {
         nearlyFullPlayer = null;
         preferredWinner = null;
         nonPreferredWinner = null;
+        oneMovePlayer = null;
+        oneMoveDraw = null;
+        oneMoveDiscard = null;
     }
 
     @Test
@@ -259,7 +285,43 @@ public class PlayerTest {
     }
 
     @Test
-    public void writeHistory() {
+    public void testOneMovePlayerLoserWriteHistory() {
+        oneMovePlayer.writeHistory(oneMovePlayer.getPlayerNumber() + 1);
+        File savedFile = new File("player" + oneMovePlayer.getPlayerNumber() + "_output.txt");
+        assertTrue(savedFile.exists());
+        try {
+            Scanner reader = new Scanner(savedFile);
+            ArrayList<String> content = new ArrayList<>();
+            while (reader.hasNextLine()){
+                content.add(reader.nextLine());
+            }
+            assertEquals("player "+ (oneMovePlayer.getPlayerNumber() + 1) + " has informed player " + oneMovePlayer.getPlayerNumber() + " that player " + (oneMovePlayer.getPlayerNumber() + 1) + " has won", content.get(content.size()-3) );
+            assertEquals("player " + oneMovePlayer.getPlayerNumber() + " exits", content.get(content.size()-2));
+            assertTrue(content.get(content.size()-1).contains("player " + oneMovePlayer.getPlayerNumber() + " hand: "));
+            assertEquals(7, content.size());
+        } catch (FileNotFoundException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void testOneMovePlayerWinnerWriteHistory() {
+        oneMovePlayer.writeHistory(oneMovePlayer.getPlayerNumber());
+        File savedFile = new File("player" + oneMovePlayer.getPlayerNumber() + "_output.txt");
+        assertTrue(savedFile.exists());
+        try {
+            Scanner reader = new Scanner(savedFile);
+            ArrayList<String> content = new ArrayList<>();
+            while (reader.hasNextLine()){
+                content.add(reader.nextLine());
+            }
+            assertEquals("player "+ oneMovePlayer.getPlayerNumber() + " wins", content.get(content.size()-3));
+            assertEquals("player " + oneMovePlayer.getPlayerNumber() + " exits", content.get(content.size()-2));
+            assertTrue(content.get(content.size()-1).contains("player " + oneMovePlayer.getPlayerNumber() + " final hand: "));
+            assertEquals(7, content.size());
+        } catch (FileNotFoundException e) {
+            fail();
+        }
     }
 
     @Test
