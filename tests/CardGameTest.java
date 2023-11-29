@@ -14,10 +14,7 @@ import java.util.LinkedList;
 import static org.junit.Assert.*;
 
 public class CardGameTest {
-    private CardDeck deck1;
-    private CardDeck deck2;
     private File pack;
-    private ArrayList<Card> openedPack = new ArrayList<>();
     private CardGame game;
     private CardGame twoPlayerDealGame;
     private CardGame fourPlayerDealGame;
@@ -26,9 +23,6 @@ public class CardGameTest {
 
     @Before
     public void setUp() throws Exception {
-        deck1 = new CardDeck();
-        deck2 = new CardDeck();
-        openedPack = new ArrayList<>();
         pack = new File("pack_test.txt");
         pack.createNewFile();
         game = new CardGame();
@@ -67,9 +61,6 @@ public class CardGameTest {
 
     @After
     public void tearDown() throws Exception {
-        deck1 = null;
-        deck2 = null;
-        openedPack = null;
         pack.delete();
         pack = null;
         game = null;
