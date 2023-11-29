@@ -1,0 +1,7 @@
+player 135 initial hand 1 2 3 4
+player 135 draws a 1 from deck 135
+player 135 discards a 1 to deck 1
+player 135 current hand is 1 2 3 4
+player 136 has informed player 135 that player 136 has won
+player 135 exits
+player 135 hand: 1 2 3 4
