@@ -2,8 +2,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.lang.reflect.*;
-import java.util.Objects;
 
 /**
  * The CardDeck class represents a deck of cards in the game
@@ -63,7 +61,7 @@ public class CardDeck {
     /**
      * Writes the decks contents to a new file
      */
-    public void writeHistory() {
+    public void writeContent() {
         // A File is created to store the deck
         File deckFile = new File("deck" + DECK_NUM + "_output.txt");
         try {

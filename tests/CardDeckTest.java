@@ -167,9 +167,9 @@ public class CardDeckTest {
      * Test for when trying to write history of empty deck
      */
     @Test
-    public void testEmptyWriteHistory() {
+    public void testEmptyWriteContent() {
         // The empty decks history is written
-        emptyDeck.writeHistory();
+        emptyDeck.writeContent();
         try {
             // Reflection is taken to get the decks number
             Field field = CardDeck.class.getDeclaredField("DECK_NUM");
@@ -193,9 +193,9 @@ public class CardDeckTest {
      * Test for when writing the history of a filled deck
      */
     @Test
-    public void testFilledWriteHistory(){
+    public void testFilledWriteContent(){
         // The filed decks history is written
-        filledDeck.writeHistory();
+        filledDeck.writeContent();
         try {
             // Reflection is taken for the decks number
             Field field = CardDeck.class.getDeclaredField("DECK_NUM");

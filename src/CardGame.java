@@ -215,7 +215,7 @@ public class CardGame {
 
                     // After a player has won their and their deck's history is written
                     player.writeHistory(winningPlayer);
-                    decks.get(player.getPlayerNumber() - players[0].getPlayerNumber()).writeHistory();
+                    decks.get(player.getPlayerNumber() - players[0].getPlayerNumber()).writeContent();
                 }
             });
 
